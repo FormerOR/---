@@ -45,7 +45,7 @@ class YOLOv8Detector:
                 cls_name = self.model.names[int(cls_id)]
                 # print(f"Class Name: {cls_name}")
                 detected_objects.append(cls_name)
-                print(f"===>Detected:{detected_objects}<===")
+                # print(f"===>Detected:{detected_objects}<===")
 
         return detected_objects
 

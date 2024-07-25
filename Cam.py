@@ -36,6 +36,8 @@ class SerialImageReceiver:
                 image = Image.open(io.BytesIO(base64_data))
                 del self.buffer[:end_index + len(self.END_MARKER)]
                 self.img = image
+                # 将图像左右镜像
+                image = image.transpose(Image.FLIP_LEFT_RIGHT)
                 return image
             
             if start_index != -1 and end_index == -1:
@@ -91,6 +93,7 @@ class SerialImageReceiver:
 
     def close(self):
         self.ser.close()
+        print("Serial port COM6 closed")
 
 
 if __name__ == "__main__":

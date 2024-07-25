@@ -15,6 +15,7 @@ class ThermalImageProcessor:
         self.rect_start = (0, 0)
         self.rect_end = (0, 0)
         self.max_temp = 0.0
+        self.temp_with_rect = None
 
     def multi_stage_upscale(self, image):
         current_width, current_height = image.shape[1], image.shape[0]
@@ -64,11 +65,11 @@ class ThermalImageProcessor:
                         
                         temp_with_rect = temp_smoothed.copy()
                         cv2.rectangle(temp_with_rect, (start_col*20, start_row*20), (end_col*20, end_row*20), (255, 255, 255), 2)
-                        # print("Top-Left: ({}, {})".format(start_col, start_row))
-                        # print("Bottom-Right: ({}, {})".format(end_col, end_row))
                         self.rect_start = (start_col*20, start_row*20)
                         self.rect_end = (end_col*20, end_row*20)
+                        self.temp_with_rect = temp_with_rect
                         
+                        # Uncomment the following lines to display the image
                         # cv2.imshow('Thermal Image with Rectangle', temp_with_rect)
                         # if cv2.waitKey(1) & 0xFF == ord('q'):
                         #     break
@@ -78,8 +79,15 @@ class ThermalImageProcessor:
             self.close_resources()
 
     def close_resources(self):
-        self.ser.close()
-        cv2.destroyAllWindows()
+        if self.ser.is_open:  # Only close if the port is open
+            try:
+                self.ser.close()
+                print("Serial port COM8 closed")
+            except serial.SerialException as e:
+                print(f"Failed to close serial port: {e}")
+        
+        # cv2.destroyAllWindows()
+        print("OpenCV windows closed")
 
 # Usage example
 if __name__ == "__main__":
